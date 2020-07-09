@@ -3,7 +3,7 @@ Program to compute angle between two n-dimensional vectors using Nvidia CUDA API
 
 ## Motivation
 
-The goal of this program is to explore CUDA platfrom and optimize code to overcome some of its shortcomings.  For implementation details, execution timings and discussions please refer to the **report** file in the **report** directory.
+The goal of this program is to explore CUDA platform and optimize code to overcome some of its shortcomings.  For implementation details, execution timings and discussions please refer to the **report** file in the **report** directory.
 
 ## Install
 
@@ -25,21 +25,23 @@ $ make
 ./a N blocksize [filename]
 ```
 
-You can run the progam as shown above where **N** is the number of integers each vector will have. **blocksize** is the number of threads within each block, for more details on CUDA's thread, block, and grid layout please refer to: [Thread Hierarchy](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#thread-hierarchy).
+You can run the program as shown above where **N** is the number of integers each vector will have. **blocksize** is the number of threads within each block, for more details on CUDA's thread, block, and grid layout please refer to: [Thread Hierarchy](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#thread-hierarchy).
 
 **filename** is optional, if given program will read integers from the input file. Format of the input file should be as follows:
 
-​					N
-​					1st integer of the vector 1
-​					....
-​					....
-​					....
-​					Nth integer of the vector 1
-​					1st integer of the vector 2
-​					....
-​					....
-​					....
-​					Nth integer of the vector 2
+```
+N
+1st integer of the vector 1
+....
+....
+....
+Nth integer of the vector 1
+1st integer of the vector 2
+....
+....
+....
+Nth integer of the vector 2
+```
 
 
 
@@ -47,7 +49,7 @@ If no file is specified, the program will generate random integers for you.
 
 ## Output
 
-The program will then compute the angle betwen the two vectors using both serial single thread execution vs CUDA parallel execution and will output following information:
+The program will then compute the angle between the two vectors using both serial single thread execution vs CUDA parallel execution and will output following information:
 
 - Number of elements (integers in each array)
 - Number of threads per block
