@@ -46,8 +46,6 @@ int computeExtraBlocks(int N, int base, int blockSize, int intsPerThread);
 __global__ void angleKernel(int * A, int * B, int N, double * dab, double * daa, double * dbb, int);
 
 
-
-
 int main(int argc, char ** argv){
 
     //Seed
@@ -71,9 +69,6 @@ int main(int argc, char ** argv){
     int * A; 
     int * B;
 
-    //printf("Argc: %d\n", argc);
-
-
     mTime = clock();
     if(argc == 4){
         input = argv[3];
@@ -95,8 +90,6 @@ int main(int argc, char ** argv){
     tCPU = computeTime(mTime);
 
     rGPU = parallel(A, B, N, blockSize, &blocks, &tHDT, &tKernel, &tDHT, &tGPU);
-
-
 
     free(A);
     free(B);
@@ -121,7 +114,6 @@ double serial(int * A, int * B, int N){
 
     double numerator, denominator, A_squared, B_squared;
     double cos_angle, angle;
-
 
     numerator = dotProduct(A, B, N);
 
@@ -206,15 +198,12 @@ double parallel(int * A, int * B, int N, int blockSize, int * blocksCreated, dou
     //output variables
     double numerator, A_squared, B_squared;
 
-
     //device arrays;
     int * D_A;
     int * D_B;
     double * dotAB;
     double * dotAA;
     double * dotBB;
-
-    
 
     //Allocate for device
     cudaMalloc(&D_A, smallestArraySize * sizeof(int));
@@ -240,7 +229,6 @@ double parallel(int * A, int * B, int N, int blockSize, int * blocksCreated, dou
     cudaMemset((D_A + N), 0, surplus);
     cudaMemset((D_B + N), 0, surplus);
     
-
     int sharedMem = 3 * sizeof(double) * blockSize;
 
     mTime = clock();
@@ -256,7 +244,6 @@ double parallel(int * A, int * B, int N, int blockSize, int * blocksCreated, dou
     cudaMemcpy(&B_squared, dotBB, sizeof(double), cudaMemcpyDeviceToHost);
     mTime = clock() - mTime;
     (*tDHT) = computeTime(mTime);
-
 
     double denominator = A_squared * B_squared;
     denominator = sqrt(denominator);
@@ -296,8 +283,8 @@ __global__ void angleKernel(int * A, int * B, int N, double * dotAB, double * do
 
     localAB[tid] = 0.0; localAA[tid] = 0.0; localBB[tid] = 0.0;
 
-    
     for(int i = gid; i < gend; i++){
+
         Aval = (double) A[i];
         Bval = (double) B[i];
 
@@ -319,7 +306,6 @@ __global__ void angleKernel(int * A, int * B, int N, double * dotAB, double * do
         }
 
         size = size/2;
-
     }
 
     if(tid == 0){
@@ -351,18 +337,6 @@ void computeBlocksAndSmallestArray(int multiProcs, int blockSize, int maxBlocks,
 
     (* smallestArraySize) = (* numBlocks) * blockSize * (* INTS_PER_THREAD);
 
-    // printf("MultiProcs: %d\n", multiProcs);
-    // printf("maxBlocks: %d\n", maxBlocks);
-    // printf("maxThreads: %d\n", maxThreads);
-    // printf("MaxThreadChunk: %d\n", maxThreadChunk);
-    // printf("ActiveBlocks: %d\n", activeBlocks);
-    // printf("base: %d\n", base);
-    // printf("LargerN: %lf\n", largerN);
-    // printf("LogN: %lf\n", logN);
-    // printf("IntsPerThread: %d\n", (* INTS_PER_THREAD));
-    // printf("Extra Blocks: %d\n", extraBlocks);
-    // printf("NumBlocks: %d\n", (*numBlocks));
-    // printf("smallestArraySize: %d\n", (*smallestArraySize));
 }
 
 int getMaxBlocks(int major, int minor){
@@ -381,6 +355,7 @@ int myMin(int A, int B){
 
     if(A < B) return A;
     else return B;
+
 }
 
 void myPrintDash(int range){
@@ -389,6 +364,7 @@ void myPrintDash(int range){
         printf("\u2012");
     }
     printf("\n");
+
 }
 
 void readArrays(char * input, int ** A, int ** B, int * N){
@@ -400,7 +376,6 @@ void readArrays(char * input, int ** A, int ** B, int * N){
 
     (* A) = (int *) malloc((* N) * sizeof(int));
     (* B) = (int *) malloc((* N) * sizeof(int));
-
 
     for(i = 0; i < (* N); i++){
         fscanf(finput, "%d\n", &num);
@@ -419,7 +394,6 @@ void readArrays(char * input, int ** A, int ** B, int * N){
 double firstLargerN(int t){
 
     double target = (double) t;
-
     double accumulator = 1;
 
     while(accumulator < target){
@@ -443,55 +417,3 @@ int computeExtraBlocks(int N, int base, int blockSize, int intsPerThread){
     
 }
 
-// printf("Rand Max: %d\n", RAND_MAX);
-// printf("Int Max: %d\n", INT_MAX);
-// printf("Double Max: %lf\n", DBL_MAX);
-
-
-// printf("sizeof int: %lu\n", sizeof(int));
-// printf("Shared mem per block: %lu\n", p.sharedMemPerBlock);
-// printf("Warp size: %d\n", p.warpSize);
-// printf("Multiprocessor count: %d\n", p.multiProcessorCount);
-// printf("Major: %d\n", p.major);
-// printf("Minor: %d\n", p.minor);
-// printf("Max Threads per Multiprocessor: %d\n", p.maxThreadsPerMultiProcessor);
-
-
-// if(blockIdx.x == gridDim.x - 1){
-//     printf("my tid: %d, gid: %d, and gend: %d\n", tid, gid, gend);
-// }
-
-
-// if(gid == 0){
-//     printf("Parallel: ");
-//     for(int i = 0; i < gridDim.x * blockDim.x * intsPerThread; i++){
-//         printf("%d ", A[i]);
-//     }
-//     printf("\n");
-// }
-
-// if(tid == 0){
-//     printf("My blockId: %d, localAB: %d\n", blockIdx.x, localAB[tid]);
-// }
-
-
-// if(argc == 4){
-//     printf("Input file: %s\n", input);
-//     printf("N: %d\n", N);
-
-//     printf("A: ");
-//     for(int i = 0; i < N; i++){
-//         printf("%d, ", A[i]);
-//     }
-//     printf("\n");
-
-//     printf("B: ");
-//     for(int i = 0; i < N; i++){
-//         printf("%d, ", B[i]);
-//     }
-//     printf("\n");
-
-// }
-
-//printf("Vector size: %d\n", N);
-//printf("Block Size: %d\n", blockSize);
