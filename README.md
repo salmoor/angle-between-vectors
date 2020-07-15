@@ -3,7 +3,7 @@ Program to compute angle between two n-dimensional vectors using Nvidia CUDA API
 
 ## Motivation
 
-The goal of this program is to explore CUDA platform and optimize code to overcome some of its shortcomings.  For implementation details, execution timings and discussions please refer to the **report** file in the **report** directory.
+The goal of this program is to explore CUDA platform and optimize code to overcome some of its shortcomings.  For implementation details, execution timings and discussions please refer to the **project_document** file in the **doc** directory.
 
 ## Install
 
